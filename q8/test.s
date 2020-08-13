@@ -1,23 +1,44 @@
 	.globl test
 test:
-	LDUR X9, [X0, #0]
-	LDUR X10, [X1, #0]
-	LDUR X11, [X2, #0]
-	LDR X12, =5
-	ADD X9, XZR, X12 // a = 5
-	LDR X12, =4
-	ADD X10, XZR, X12 // b = 4
-	LDR X12, =12
-	ADD X11, XZR, X12 // m = 12
-	ADD X11, X9, #0 // m = a
-	CMP X10, X11 // b == m
-	B.NE Else
-	SUB X11, X10, X9 // m = b - a
-	B Exit
-	Else:
-	SUB X11, X9, X10 // m = a - b
+
+	ADD X19, XZR, X0
+	ADD X21, XZR, X30
+
+	ADD X27, XZR, XZR // i = 0 + 0
+	ADD X20, XZR, XZR // X18 = 0 + 0
+	L1:  ADD X10, X19, X27 // endereço de str[i] em X10
+	LDRSB X11, [X10, #0] // X11 = str[i]
+	CBZ X11, Exit // se str[i] == 0, acabou a string
+	ADD X27, X27, #1 // i = i + 1
+	ADD X0, XZR, X11
+	SUB X0, X0, #48
+	BL fact
+	ADD X20, X20, X0
+	B L1
 	Exit:
-	STUR X9, [X0, #0]
-	STUR X10, [X1, #0]
-	STUR X11, [X2, #0]
+	ADD X0, XZR, X20
+
+	ADD X30, XZR, X21
 	BR	X30
+
+	fact:
+	CMP X0, #0
+	B.NE FactCont
+	ADD X0, XZR, XZR
+	ADD X0, X0, #1
+	BR X30
+	FactCont:
+	SUBS XZR, X0, #1
+	B.GT else
+	BR X30
+	else:
+	SUB SP, SP, #32
+	STUR X30, [SP, #16]
+	STUR X0, [SP, #0]
+	SUB X0, X0, #1
+	BL fact
+	LDUR X9, [SP, #0]
+	LDUR X30, [SP, #16]
+	ADD SP, SP, #32
+	MUL X0, X9, X0
+	BR X30
