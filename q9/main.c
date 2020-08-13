@@ -2,15 +2,16 @@
 
 #include <stdio.h>
 
-void test(long long int *a, long long int *b, long long int *m);
+long long int test(char *a, char *b);
 
 int main(void)
 {
-    long long int a = 9, b = 10;
-    long long int m = 8;
-    test(&a, &b, &m);
-    printf("a = %lld\n", a);
-    printf("b = %lld\n", b);
-    printf("m = %lld\n", m);
+    char a[] = "grnrclszemskvbgcluwtgyvieip";
+    char b[] = "leg";
+    long long int x;
+    x = test(a, b);
+    printf("a = %s\n", a);
+    printf("b = %s\n", b);
+    printf("x = %lld\n", x);
     return 0;
 }
